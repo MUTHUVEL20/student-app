@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 
 use App\Models\Student;
 
+
+use Illuminate\Support\Facades\Gate;
+
 class StudentController extends Controller
 {
     
@@ -23,7 +26,7 @@ class StudentController extends Controller
           $student = Student::create([
                           'name' => $validated['name'],
                           'email' => $validated['email'],
-                          'password' => $validated['password'],
+                          'password' =>  bcrypt($validated['password']),
                           'phone' => $validated['phone']
                         ]);
 
@@ -40,5 +43,32 @@ class StudentController extends Controller
     public function dashboard () {
 
         return view('dashboard');
+    }
+
+
+    public function destroy ($studentid) {
+
+
+       $student = Student::find($studentid);
+
+        if (!$student) {
+        return response()->json(['success' => false, 'message' => 'Student not found'], 404);
+       }
+
+    if(auth()->user()->cannot('delete',$student)) {
+
+        return response()->json(['success' => false, 'message' => 'You are unauthorized user'],403);
+    }
+
+
+    $student->delete();
+
+      return response()->json([
+        'success' => true,
+        'student' => $student
+    ]);
+
+
+
     }
 }

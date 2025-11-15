@@ -23,16 +23,29 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 
+Route::post('/loginuser', [userAuthController::class, 'userLogin']);
+
+
 Route::post('/addstudent', [StudentController::class, 'savestudent']);
 
-Route::post('/login', [studentAuthController::class,'login'])->name('login');
+Route::post('/loginvalidation', [StudentAuthController::class,'login'])->name('login');
+
+ 
+
 
 Route::middleware(['studentAuth'])->group (function () {
 
     Route::get('/dashboard',[StudentController::class,'dashboard'])->name('dashboard');
+
+    Route::delete('/deletestudent/{id}', [StudentController::class, 'destroy']);
+
 
 
 
     Route::post('/enroll',[EnrollmentController::class,'enroll'])->name('enroll');
 
 });
+
+
+
+
