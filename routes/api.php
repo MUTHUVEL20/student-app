@@ -7,6 +7,8 @@ use App\Http\Controllers\StudentController;
 
 use App\Http\Controllers\StudentAuthController;
 
+use App\Http\Controllers\userAuthController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
