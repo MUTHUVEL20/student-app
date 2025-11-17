@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 
 use App\Models\User;
 
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
@@ -36,14 +39,33 @@ class userAuthController extends Controller
             }
 
 
-            //Generate new token 
+            //Generate new token  -> generate API Token when login
 
-            $token = Str::random(60);
+            // $token = Str::random(60);
 
 
-            $user->update([
-                'api_token'=> $token
-            ]);
+            // $user->update([
+            //     'api_token'=> $token
+            // ]);
+
+
+            //Generate JWT Token -> Instead of API Token using JWT
+
+
+            $payload =    [
+
+                'iss' => "laravel-jwt",
+                'sub' => $user->id,
+                'email' => $user->email,
+                'role'  => $user->role,
+                'iat'   => time(),
+                'exp'  => time()+60*60*24
+            ];
+
+
+            //Generate JWT Token
+
+            $token = JWT::encode($payload, env('JWT_SECRET'), 'HS256');
 
 
             return response()->json([

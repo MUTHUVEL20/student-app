@@ -33,11 +33,30 @@ Route::post('/addstudent', [StudentController::class, 'savestudent']);
 Route::post('/loginvalidation', [StudentAuthController::class,'login'])->name('login');
 
  
+//This is API Middleware
+
+// Route::middleware(['studentAuth'])->group (function () {
+
+//     Route::get('/dashboard',[StudentController::class,'dashboard'])->name('dashboard');
+
+//     Route::delete('/deletestudent/{id}', [StudentController::class, 'destroy']);
 
 
-Route::middleware(['studentAuth'])->group (function () {
 
-    Route::get('/dashboard',[StudentController::class,'dashboard'])->name('dashboard');
+
+//     Route::post('/enroll',[EnrollmentController::class,'enroll'])->name('enroll');
+
+// });
+
+
+
+
+// This is JWT Middleware
+
+
+Route::middleware(['jwt'])->group (function () {
+
+      Route::get('/dashboard',[StudentController::class,'dashboard'])->name('dashboard');
 
     Route::delete('/deletestudent/{id}', [StudentController::class, 'destroy']);
 
@@ -47,7 +66,3 @@ Route::middleware(['studentAuth'])->group (function () {
     Route::post('/enroll',[EnrollmentController::class,'enroll'])->name('enroll');
 
 });
-
-
-
-
