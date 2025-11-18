@@ -58,15 +58,38 @@ Route::post('/refresh-token', [userAuthController::class, 'refreshToken']);
 // This is JWT Middleware
 
 
+// Route::middleware(['jwt'])->group (function () {
+
+//       Route::get('/dashboard',[StudentController::class,'dashboard'])->name('dashboard');
+
+//     Route::delete('/deletestudent/{id}', [StudentController::class, 'destroy']);
+
+
+
+
+//     Route::post('/enroll',[EnrollmentController::class,'enroll'])->name('enroll');
+
+// });  //this is only JWT based middleware
+
+
+
 Route::middleware(['jwt'])->group (function () {
 
-      Route::get('/dashboard',[StudentController::class,'dashboard'])->name('dashboard');
 
-    Route::delete('/deletestudent/{id}', [StudentController::class, 'destroy']);
+    Route::middleware(['role:admin'])->group (function () {
+
+          Route::delete('/deletestudent/{id}', [StudentController::class, 'destroy']);
+
+          Route::post('/enroll',[EnrollmentController::class,'enroll'])->name('enroll');
 
 
+    });
 
 
-    Route::post('/enroll',[EnrollmentController::class,'enroll'])->name('enroll');
+    Route::middleware(['role:user'])-> group (function () {
 
-});
+          Route::get('/dashboard',[StudentController::class,'dashboard'])->name('dashboard');
+
+    });
+
+});  // This is JWT with Role Based middleware
