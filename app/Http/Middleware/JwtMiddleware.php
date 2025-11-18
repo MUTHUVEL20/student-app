@@ -44,6 +44,11 @@ class JwtMiddleware
         auth () -> setUser($user);
 
 
+        // $request->auth = $decoded;
+
+        
+
+
 
         return $next($request);
     }

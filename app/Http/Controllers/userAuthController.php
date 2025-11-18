@@ -59,13 +59,28 @@ class userAuthController extends Controller
                 'email' => $user->email,
                 'role'  => $user->role,
                 'iat'   => time(),
-                'exp'  => time()+60*60*24
+                'exp'  => time()+60*15 //Access Token valid 15 minutes
             ];
 
 
-            //Generate JWT Token
+            //Generate JWT Access Token
 
             $token = JWT::encode($payload, env('JWT_SECRET'), 'HS256');
+
+            //Generate JWT Refresh Token
+
+
+
+            $refreshPayload = [
+                'sub' => $user->id,
+                'exp' => time()+ (60 * 60 * 24 * 7) // Refresh token valid 7 days
+            ];
+
+            $refreshToken = JWT::encode($refreshPayload, env('JWT_SECRET'), 'HS256');
+
+            $user->update([
+                'refresh_token' => $refreshToken
+            ]);
 
 
             return response()->json([
@@ -73,6 +88,54 @@ class userAuthController extends Controller
                 'message' => 'login successfull',
                 'token'  => $token
             ]);
+
+    }
+
+
+
+
+    public function refreshToken (Request $request) {
+
+
+        $refreshToken = $request->refresh_token;
+
+        if(!$refreshToken) {
+
+            return response()->json(['error' => 'Refresh Token Required'],400);
+        }
+
+
+        $decoded = JWT::decode($refreshToken, new key (env('JWT_SECRET'), 'HS256'));
+
+
+        $user = User::find($decoded->sub);
+
+
+        if(!$user || $user->refresh_token !== $refreshToken) {
+
+
+            return response()->json(['error' => 'Invalid Refresh Token'],401);
+        }
+
+
+
+        $payload = [
+            'sub' => $user->id,
+            'email'=>$user->email,
+            'role' => $user->role,
+            'exp' => time() + 60 * 15
+        ];
+
+
+        $newAccessToken = JWT::encode($payload, env ('JWT_SECRET'), 'HS256');
+
+
+        return response()->json([
+            'success'=> true,
+            'newAccessToken' => $newAccessToken
+        ]);
+
+
 
     }
 }

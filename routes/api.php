@@ -32,6 +32,10 @@ Route::post('/addstudent', [StudentController::class, 'savestudent']);
 
 Route::post('/loginvalidation', [StudentAuthController::class,'login'])->name('login');
 
+
+Route::post('/refresh-token', [userAuthController::class, 'refreshToken']);
+
+
  
 //This is API Middleware
 
