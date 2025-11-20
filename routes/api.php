@@ -9,6 +9,10 @@ use App\Http\Controllers\StudentAuthController;
 
 use App\Http\Controllers\userAuthController;
 
+use App\Http\Controllers\CourseController;
+
+use App\Http\Controllers\StudentCourseController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -93,3 +97,31 @@ Route::middleware(['jwt'])->group (function () {
     });
 
 });  // This is JWT with Role Based middleware
+
+
+
+// Route::post('/OneToOne', function ()  {
+
+
+//     $student = Student::with('profile')->find('1');
+
+//     dd($student);
+
+// });
+
+Route::post('/OneToOne', [StudentController::class,'OneToOne']);
+
+
+Route::get('/viewcourse', [CourseController::class,'index']);
+
+Route::post('/addcourse', [CourseController::class,'store']);
+
+
+Route::get('/singleCourse/{id}', [CourseController::class,'show']);
+
+Route::post('/students/{id}/courses', [StudentCourseController::class, 'assignCourses']);
+
+Route::delete('/students/{id}/courses/{courseId}', [StudentCourseController::class, 'removeCourse']);
+
+
+Route::get('/students/{id}/courses', [StudentCourseController::class, 'listCourse']);

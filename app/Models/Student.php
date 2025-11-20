@@ -23,4 +23,17 @@ class Student extends Model
         'phone'
 
     ];
+
+    public function profile () {
+
+
+        return $this->hasOne(Profile::class);
+    }
+
+
+    public function course () {
+
+
+        return $this->belongsToMany(Course::class);
+    }
 }

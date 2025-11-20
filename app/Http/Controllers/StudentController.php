@@ -73,4 +73,15 @@ class StudentController extends Controller
 
 
     }
+
+
+
+    public function OneToOne () {
+
+            $student = Student::with('profile')->get();
+
+            echo $student;
+
+            //  dd($student);
+    }
 }

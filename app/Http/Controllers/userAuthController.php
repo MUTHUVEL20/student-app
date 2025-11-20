@@ -59,7 +59,7 @@ class userAuthController extends Controller
                 'email' => $user->email,
                 'role'  => $user->role,
                 'iat'   => time(),
-                'exp'  => time()+60*15 //Access Token valid 15 minutes
+                'exp'  => time()+ 60 * 2 //Access Token valid 15 minutes
             ];
 
 
@@ -71,9 +71,15 @@ class userAuthController extends Controller
 
 
 
-            $refreshPayload = [
+            // $refreshPayload = [
+            //     'sub' => $user->id,
+            //     'exp' => time()+ (60 * 60 * 24 * 7) // Refresh token valid 7 days
+            // ];
+
+
+               $refreshPayload = [
                 'sub' => $user->id,
-                'exp' => time()+ (60 * 60 * 24 * 7) // Refresh token valid 7 days
+                'exp' => time()+ (60 * 5) // Refresh token valid 7 days
             ];
 
             $refreshToken = JWT::encode($refreshPayload, env('JWT_SECRET'), 'HS256');
@@ -86,7 +92,8 @@ class userAuthController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'login successfull',
-                'token'  => $token
+                'access token'  => $token,
+                'refresh token'  =>  $refreshToken
             ]);
 
     }
